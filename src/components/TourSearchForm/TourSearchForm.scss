@@ -1,0 +1,76 @@
+.form {
+  background: #fff;
+  display: inline-block;
+  padding: 28px;
+  border-radius: 8px;
+
+  &__title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+
+  &__input {
+    outline: none;
+    border: 1px solid #f0f0f0;
+    padding: 6px;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  &__dropdown {
+    list-style: none;
+    padding: 8px;
+    margin: 0;
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  &__btn {
+    margin-top: 8px;
+    padding: 8px;
+    background: #0000FF;
+    outline: none;
+    border: none;
+    color: #fff;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+}
+
+.dropdown-item {
+  display: flex;
+  gap: 8px;
+  cursor: pointer;
+
+  .icon {
+
+    img {
+      border-radius: 3px;
+    }
+  }
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.close-icon {
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  cursor: pointer;
+
+  img {
+    width: 14px;
+    height: 14px;
+  }
+}
