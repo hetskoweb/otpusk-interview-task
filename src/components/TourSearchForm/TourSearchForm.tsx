@@ -6,22 +6,18 @@ import { Loader } from "../Loader/Loader.js";
 import closeIcon from '../../img/icon-close.svg';
 import pinIcon from '../../img/pin-icon.svg';
 import bedIcon from '../../img/bed-icon.svg';
-
-interface GeoEntity {
-  id: string;
-  name: string;
-  flag?: string;
-  type: "country" | "city" | "hotel";
-}
+import type { GeoEntity } from "../../types/GeoGentity.js";
 
 type Props = {
   setTours: React.Dispatch<React.SetStateAction<any[]>>;
   setToursLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setToursError: React.Dispatch<React.SetStateAction<boolean>>;
   setSearchToken: React.Dispatch<React.SetStateAction<string | null>>;
+  onToursLoaded: (tours: any[], countryId: string | null) => void;
+  setCountries: React.Dispatch<React.SetStateAction<Record<string, GeoEntity>>>;
 };
 
-export const TourSearchForm: React.FC<Props> = ({ setTours, setToursLoading, setToursError, setSearchToken }) => {
+export const TourSearchForm: React.FC<Props> = ({ setCountries, setTours, setToursLoading, setToursError, setSearchToken, onToursLoaded }) => {
   const [searchText, setSearchText] = useState('');
   const [selectedType, setSelectedType] = useState<GeoEntity["type"] | null>(null);
   const [dropdownItems, setDropdownItems] = useState<GeoEntity[]>([]);
@@ -29,6 +25,16 @@ export const TourSearchForm: React.FC<Props> = ({ setTours, setToursLoading, set
   const [loading, setLoading] = useState(false);
   const [selectedCountryId, setSelectedCountryId] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    getCountries()
+      .then((res: Response) => res.json())
+      .then((data: Record<string, GeoEntity>) => {
+        setCountries(data);
+        setDropdownItems(Object.values(data).map(item => ({ ...item, type: "country" })));
+      })
+      .catch((err: unknown) => console.error("Помилка при завантаженні країн:", err));
+  }, []);
 
   const handleInputClick = () => {
     setShowDropdown(true);
@@ -43,8 +49,10 @@ export const TourSearchForm: React.FC<Props> = ({ setTours, setToursLoading, set
       setLoading(true);
       searchGeo(searchText)
         .then((res: Response) => res.json())
-        .then((data: Record<string, GeoEntity>) =>
-          setDropdownItems(Object.values(data))
+        .then((data: Record<string, GeoEntity>) => {
+          setDropdownItems(Object.values(data));
+          setCountries(data);
+        }
         )
         .catch((err: unknown) => console.error("Помилка при пошуку:", err))
         .finally(() => setLoading(false));
@@ -115,7 +123,7 @@ export const TourSearchForm: React.FC<Props> = ({ setTours, setToursLoading, set
         .then((data: any) => {
           console.log("getSearchPrices response:", data);
           if (data.prices) {
-            setTours(Object.values(data.prices));
+            onToursLoaded(Object.values(data.prices), selectedCountryId);
             setToursLoading(false);
           } else if (data.code === 425 && data.waitUntil) {
             fetchTours(token, new Date(data.waitUntil).getTime(), retries);
