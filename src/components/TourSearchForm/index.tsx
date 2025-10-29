@@ -1,1 +1,1 @@
-export { default } from "./TourSearchForm";
+export * from './TourSearchForm';

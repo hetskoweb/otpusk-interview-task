@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 // @ts-ignore
-import { getCountries, searchGeo } from "../../api/api.js"
+import { getCountries, searchGeo, startSearchPrices, getSearchPrices } from "../../api/api.js"
 import "./TourSearchForm.scss";
 import { Loader } from "../Loader/Loader.js";
 import closeIcon from '../../img/icon-close.svg';
@@ -14,12 +14,20 @@ interface GeoEntity {
   type: "country" | "city" | "hotel";
 }
 
-export default function TourSearchForm() {
+type Props = {
+  setTours: React.Dispatch<React.SetStateAction<any[]>>;
+  setToursLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setToursError: React.Dispatch<React.SetStateAction<boolean>>;
+  setSearchToken: React.Dispatch<React.SetStateAction<string | null>>;
+};
+
+export const TourSearchForm: React.FC<Props> = ({ setTours, setToursLoading, setToursError, setSearchToken }) => {
   const [searchText, setSearchText] = useState('');
   const [selectedType, setSelectedType] = useState<GeoEntity["type"] | null>(null);
   const [dropdownItems, setDropdownItems] = useState<GeoEntity[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedCountryId, setSelectedCountryId] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleInputClick = () => {
@@ -73,6 +81,12 @@ export default function TourSearchForm() {
     setSearchText(item.name);
     setSelectedType(item.type);
     setShowDropdown(false);
+
+    if (item.type === "country") {
+      setSelectedCountryId(item.id);
+    } else {
+      setSelectedCountryId(null);
+    }
   };
 
   useEffect(() => {
@@ -91,8 +105,63 @@ export default function TourSearchForm() {
     };
   }, []);
 
+  const fetchTours = (token: string, waitTime: number, retries = 2) => {
+    const now = Date.now();
+    const delay = waitTime > now ? waitTime - now : 0;
+
+    setTimeout(() => {
+      getSearchPrices(token)
+        .then((res: Response) => res.json())
+        .then((data: any) => {
+          console.log("getSearchPrices response:", data);
+          if (data.prices) {
+            setTours(Object.values(data.prices));
+            setToursLoading(false);
+          } else if (data.code === 425 && data.waitUntil) {
+            fetchTours(token, new Date(data.waitUntil).getTime(), retries);
+          } else {
+            throw new Error(data.message || "Unknown error");
+          }
+        })
+        .catch((err: unknown) => {
+          if (retries > 0) {
+            fetchTours(token, Date.now(), retries - 1);
+          } else {
+            console.error("Помилка отримання турів:", err);
+            setToursError(true);
+            setToursLoading(false);
+          }
+        });
+    }, delay);
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    if (!searchText || selectedType !== "country") {
+      return;
+    }
+
+    setToursLoading(true);
+    setTours([]);
+    setToursError(false);
+
+    startSearchPrices(selectedCountryId)
+      .then((res: Response) => res.json())
+      .then((data: { token: string; waitUntil: string }) => {
+        setSearchToken(data.token);
+        const waitTime = new Date(data.waitUntil).getTime();
+        fetchTours(data.token, waitTime);
+      })
+      .catch((err: unknown) => {
+        console.error("Помилка старту пошуку:", err);
+        setToursError(true);
+        setToursLoading(false);
+      });
+  };
+
   return (
-    <form className="form">
+    <form className="form" onSubmit={handleSubmit}>
       <div className="form__container" ref={containerRef}>
         <div className="form__title">Форма пошуку турів</div>
         <div className="input-wrapper">
