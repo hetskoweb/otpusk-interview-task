@@ -1,4 +1,4 @@
-import type { Hotel } from "./Hotel";
+import type { Hotel } from './Hotel';
 
 export interface Tour {
   id: string;

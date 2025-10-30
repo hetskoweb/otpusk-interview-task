@@ -1,12 +1,18 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from 'react';
 // @ts-ignore
-import { getCountries, searchGeo, startSearchPrices, getSearchPrices, stopSearchPrices } from "../../api/api.js"
-import "./TourSearchForm.scss";
-import { Loader } from "../Loader/Loader.js";
+import {
+  getCountries,
+  searchGeo,
+  startSearchPrices,
+  getSearchPrices,
+  stopSearchPrices,
+} from '../../api/api.js';
+import './TourSearchForm.scss';
+import { Loader } from '../Loader/Loader.js';
 import closeIcon from '../../img/icon-close.svg';
 import pinIcon from '../../img/pin-icon.svg';
 import bedIcon from '../../img/bed-icon.svg';
-import type { GeoEntity } from "../../types/GeoGentity.js";
+import type { GeoEntity } from '../../types/GeoGentity.js';
 
 type Props = {
   setTours: React.Dispatch<React.SetStateAction<any[]>>;
@@ -17,13 +23,24 @@ type Props = {
   setCountries: React.Dispatch<React.SetStateAction<Record<string, GeoEntity>>>;
 };
 
-export const TourSearchForm: React.FC<Props> = ({ setCountries, setTours, setToursLoading, setToursError, setSearchToken, onToursLoaded }) => {
+export const TourSearchForm: React.FC<Props> = ({
+  setCountries,
+  setTours,
+  setToursLoading,
+  setToursError,
+  setSearchToken,
+  onToursLoaded,
+}) => {
   const [searchText, setSearchText] = useState('');
-  const [selectedType, setSelectedType] = useState<GeoEntity["type"] | null>(null);
+  const [selectedType, setSelectedType] = useState<GeoEntity['type'] | null>(
+    null,
+  );
   const [dropdownItems, setDropdownItems] = useState<GeoEntity[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [selectedCountryId, setSelectedCountryId] = useState<string | null>(null);
+  const [selectedCountryId, setSelectedCountryId] = useState<string | null>(
+    null,
+  );
   const containerRef = useRef<HTMLDivElement>(null);
   const activeSearchToken = useRef<string | null>(null);
   const searchCancelled = useRef(false);
@@ -35,9 +52,13 @@ export const TourSearchForm: React.FC<Props> = ({ setCountries, setTours, setTou
       .then((res: Response) => res.json())
       .then((data: Record<string, GeoEntity>) => {
         setCountries(data);
-        setDropdownItems(Object.values(data).map(item => ({ ...item, type: "country" })));
+        setDropdownItems(
+          Object.values(data).map((item) => ({ ...item, type: 'country' })),
+        );
       })
-      .catch((err: unknown) => console.error("Помилка при завантаженні країн:", err));
+      .catch((err: unknown) =>
+        console.error('Помилка при завантаженні країн:', err),
+      );
   }, []);
 
   const handleInputClick = () => {
@@ -47,18 +68,17 @@ export const TourSearchForm: React.FC<Props> = ({ setCountries, setTours, setTou
       loadCountries();
     }
 
-    if (selectedType === "country") {
+    if (selectedType === 'country') {
       loadCountries();
-    } else if (selectedType === "city" || selectedType === "hotel") {
+    } else if (selectedType === 'city' || selectedType === 'hotel') {
       setLoading(true);
       searchGeo(searchText)
         .then((res: Response) => res.json())
         .then((data: Record<string, GeoEntity>) => {
           setDropdownItems(Object.values(data));
           setCountries(data);
-        }
-        )
-        .catch((err: unknown) => console.error("Помилка при пошуку:", err))
+        })
+        .catch((err: unknown) => console.error('Помилка при пошуку:', err))
         .finally(() => setLoading(false));
     }
   };
@@ -68,9 +88,13 @@ export const TourSearchForm: React.FC<Props> = ({ setCountries, setTours, setTou
     getCountries()
       .then((res: Response) => res.json())
       .then((data: Record<string, GeoEntity>) => {
-        setDropdownItems(Object.values(data).map(item => ({ ...item, type: "country" })));
+        setDropdownItems(
+          Object.values(data).map((item) => ({ ...item, type: 'country' })),
+        );
       })
-      .catch((err: unknown) => console.error("Помилка при завантаженні країн:", err))
+      .catch((err: unknown) =>
+        console.error('Помилка при завантаженні країн:', err),
+      )
       .finally(() => setLoading(false));
   };
 
@@ -85,7 +109,7 @@ export const TourSearchForm: React.FC<Props> = ({ setCountries, setTours, setTou
       .then((data: Record<string, GeoEntity>) => {
         setDropdownItems(Object.values(data));
       })
-      .catch((err: unknown) => console.error("Помилка при пошуку:", err))
+      .catch((err: unknown) => console.error('Помилка при пошуку:', err))
       .finally(() => setLoading(false));
   };
 
@@ -94,7 +118,7 @@ export const TourSearchForm: React.FC<Props> = ({ setCountries, setTours, setTou
     setSelectedType(item.type);
     setShowDropdown(false);
 
-    if (item.type === "country") {
+    if (item.type === 'country') {
       setSelectedCountryId(item.id);
     } else {
       setSelectedCountryId(null);
@@ -111,9 +135,9 @@ export const TourSearchForm: React.FC<Props> = ({ setCountries, setTours, setTou
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
@@ -126,26 +150,33 @@ export const TourSearchForm: React.FC<Props> = ({ setCountries, setTours, setTou
 
       getSearchPrices(token)
         .then((res: Response) => res.json())
-        .then((data: { prices?: Record<string, any>; code?: number; waitUntil?: string; message?: string }) => {
-          if (searchCancelled.current) return;
+        .then(
+          (data: {
+            prices?: Record<string, any>;
+            code?: number;
+            waitUntil?: string;
+            message?: string;
+          }) => {
+            if (searchCancelled.current) return;
 
-          if (data.prices) {
-            onToursLoaded(Object.values(data.prices), selectedCountryId);
-            setToursLoading(false);
-            setIsSearching(false);
-          } else if (data.code === 425 && data.waitUntil) {
-            fetchTours(token, new Date(data.waitUntil).getTime(), retries);
-          } else {
-            throw new Error(data.message || "Unknown error");
-          }
-        })
+            if (data.prices) {
+              onToursLoaded(Object.values(data.prices), selectedCountryId);
+              setToursLoading(false);
+              setIsSearching(false);
+            } else if (data.code === 425 && data.waitUntil) {
+              fetchTours(token, new Date(data.waitUntil).getTime(), retries);
+            } else {
+              throw new Error(data.message || 'Unknown error');
+            }
+          },
+        )
         .catch((err: unknown) => {
           if (searchCancelled.current) return;
 
           if (retries > 0) {
             fetchTours(token, Date.now(), retries - 1);
           } else {
-            console.error("Помилка отримання турів:", err);
+            console.error('Помилка отримання турів:', err);
             setToursError(true);
             setToursLoading(false);
             setIsSearching(false);
@@ -157,7 +188,7 @@ export const TourSearchForm: React.FC<Props> = ({ setCountries, setTours, setTou
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!searchText || selectedType !== "country") return;
+    if (!searchText || selectedType !== 'country') return;
 
     setToursLoading(true);
     setTours([]);
@@ -173,11 +204,9 @@ export const TourSearchForm: React.FC<Props> = ({ setCountries, setTours, setTou
 
       stopSearchPrices(activeSearchToken.current)
         .then((res: Response) => res.json())
-        .then((data: { success: boolean; message?: string }) => {
-
-        })
+        .then(() => {})
         .catch((err: unknown) => {
-          console.error("Помилка при зупинці пошуку:", err);
+          console.error('Помилка при зупинці пошуку:', err);
         });
     }
 
@@ -193,7 +222,7 @@ export const TourSearchForm: React.FC<Props> = ({ setCountries, setTours, setTou
         fetchTours(data.token, waitTime);
       })
       .catch((err: unknown) => {
-        console.error("Помилка старту пошуку:", err);
+        console.error('Помилка старту пошуку:', err);
         setToursError(true);
         setToursLoading(false);
         setIsSearching(false);
@@ -209,16 +238,19 @@ export const TourSearchForm: React.FC<Props> = ({ setCountries, setTours, setTou
             type="text"
             placeholder="Виберіть напрямок"
             className="form__input"
-            name='country'
+            name="country"
             autoComplete="off"
             value={searchText}
             onClick={handleInputClick}
             onChange={handleInputChange}
           />
           {searchText.length > 0 && (
-            <span className="close-icon" onClick={() => {
-              setSearchText("");
-            }}>
+            <span
+              className="close-icon"
+              onClick={() => {
+                setSearchText('');
+              }}
+            >
               <img src={closeIcon} alt="clear" />
             </span>
           )}
@@ -234,13 +266,13 @@ export const TourSearchForm: React.FC<Props> = ({ setCountries, setTours, setTou
                   onClick={() => handleSelect(item)}
                 >
                   <span className="icon">
-                    {item.type === "country" && (
+                    {item.type === 'country' && (
                       <img src={item.flag} alt={item.name} width={20} />
                     )}
-                    {item.type === "city" && (
+                    {item.type === 'city' && (
                       <img src={pinIcon} alt={item.name} width={20} />
                     )}
-                    {item.type === "hotel" && (
+                    {item.type === 'hotel' && (
                       <img src={bedIcon} alt={item.name} width={20} />
                     )}
                   </span>
@@ -255,4 +287,4 @@ export const TourSearchForm: React.FC<Props> = ({ setCountries, setTours, setTou
       </button>
     </form>
   );
-}
+};

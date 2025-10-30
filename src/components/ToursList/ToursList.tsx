@@ -1,5 +1,5 @@
-import type { GeoEntity } from "../../types/GeoGentity";
-import type { Tour } from "../../types/Tour";
+import type { GeoEntity } from '../../types/GeoGentity';
+import type { Tour } from '../../types/Tour';
 import { TourCard } from '../TourCard';
 
 type Props = {

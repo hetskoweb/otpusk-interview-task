@@ -1,6 +1,7 @@
 # Tour Search App
 
 ## Overview
+
 This project is a React-based tour search client. Users can:
 
 - Select a travel destination (country or city)
@@ -11,6 +12,7 @@ This project is a React-based tour search client. Users can:
 The app uses a provided `api.js` for all data operations. Modifications to `api.js` are not allowed.'
 
 ## API Methods
+
 - `getCountries()` — fetch all countries
 - `searchGeo(query)` — search countries/cities
 - `startSearchPrices(countryID)` — initiate server search
@@ -26,29 +28,34 @@ Experience the live website: [Tour Search App](https://hetskoweb.github.io/otpus
 ## Technologies Used 💻
 
 **Core**
-* **React (v18.3.1)** - UI framework
-* **TypeScript (v5.2.2)** - Type safety
-* **Sass (v1.83.4)** - Styling
+
+- **React (v18.3.1)** - UI framework
+- **TypeScript (v5.2.2)** - Type safety
+- **Sass (v1.83.4)** - Styling
 
 **UI/UX**
-* **React Router (v6.25.1)** - Navigation
+
+- **React Router (v6.25.1)** - Navigation
 
 **Development && Deployment**
-* **Vite (v5.3.1)** - Build tool
-* **ESLint (v8.57.0)** - Code Quality
-* **Prettier (v3.3.2)** - Code Formatting
+
+- **Vite (v5.3.1)** - Build tool
+- **ESLint (v8.57.0)** - Code Quality
+- **Prettier (v3.3.2)** - Code Formatting
 
 ---
 
 ## Features by Task
 
 ### Task 1: Search Form
+
 - Input with dropdown for countries and cities.
 - Fetch countries via `getCountries()`.
 - Search as user types using `searchGeo()`.
 - Selecting an item closes dropdown and fills input.
 
 ### Task 2: Search Tours
+
 - Submit form → `startSearchPrices(countryID)` → get search token.
 - Poll results with `getSearchPrices(token)` after allowed wait.
 - Handles:
@@ -58,6 +65,7 @@ Experience the live website: [Tour Search App](https://hetskoweb.github.io/otpus
   - Errors
 
 ### Task 3: Render Results
+
 - Display tours as cards in a responsive grid (2 per row, 1 if width < 250px).
 - Each card shows:
   - Hotel name
@@ -68,6 +76,7 @@ Experience the live website: [Tour Search App](https://hetskoweb.github.io/otpus
   - Link to view price
 
 ### Task 4: Tour Page
+
 - Separate page for a selected tour.
 - Fetch data via:
   - `getPrice(priceId)` for tour details
@@ -78,6 +87,7 @@ Experience the live website: [Tour Search App](https://hetskoweb.github.io/otpus
 - Reuse components from search results.
 
 ### Task 5: Cancel & Restart Search
+
 - If a search is active and parameters change:
   - Cancel current search (`stopSearchPrices(token)`)
   - Ignore any late responses from old token

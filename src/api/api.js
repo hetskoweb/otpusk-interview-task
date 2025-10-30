@@ -3,9 +3,9 @@ const randomInt = (min, max) => {
 };
 
 const generateToken = () => {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
-    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 };
@@ -14,81 +14,81 @@ class DB {
   constructor() {
     this.countries = {
       115: {
-        name: "Туреччина",
-        id: "115",
-        flag: "https://flagcdn.com/w40/tr.png",
+        name: 'Туреччина',
+        id: '115',
+        flag: 'https://flagcdn.com/w40/tr.png',
       },
       43: {
-        name: "Єгипет",
-        id: "43",
-        flag: "https://flagcdn.com/w40/eg.png",
+        name: 'Єгипет',
+        id: '43',
+        flag: 'https://flagcdn.com/w40/eg.png',
       },
       34: {
-        name: "Греція",
-        id: "34",
-        flag: "https://flagcdn.com/w40/gr.png",
+        name: 'Греція',
+        id: '34',
+        flag: 'https://flagcdn.com/w40/gr.png',
       },
     };
 
     this.cities = {
       712: {
-        countryId: "43",
+        countryId: '43',
         id: 712,
-        name: "Хургада",
+        name: 'Хургада',
       },
       1262: {
         id: 1262,
-        name: "Макаді Бей",
-        countryId: "43",
+        name: 'Макаді Бей',
+        countryId: '43',
       },
       1247: {
         id: 1247,
-        name: "Марса Алам",
-        countryId: "43",
+        name: 'Марса Алам',
+        countryId: '43',
       },
       953: {
         id: 953,
-        name: "Аланія",
-        countryId: "115",
+        name: 'Аланія',
+        countryId: '115',
       },
     };
 
     this.hotels = {
       7953: {
         id: 7953,
-        name: "Marlin Inn Azur Resort",
-        img: "https://newimg.otpusk.com/2/400x300/00/03/97/88/3978846.webp",
+        name: 'Marlin Inn Azur Resort',
+        img: 'https://newimg.otpusk.com/2/400x300/00/03/97/88/3978846.webp',
         cityId: 712,
-        cityName: "Хургада",
-        countryId: "43",
-        countryName: "Єгипет",
+        cityName: 'Хургада',
+        countryId: '43',
+        countryName: 'Єгипет',
       },
       18183: {
         id: 18183,
-        name: "Albatros Makadi Resort",
-        img: "https://newimg.otpusk.com/2/400x300/00/04/88/41/4884132.webp",
+        name: 'Albatros Makadi Resort',
+        img: 'https://newimg.otpusk.com/2/400x300/00/04/88/41/4884132.webp',
         cityId: 1262,
-        cityName: "Макаді Бей",
-        countryId: "43",
-        countryName: "Єгипет",
+        cityName: 'Макаді Бей',
+        countryId: '43',
+        countryName: 'Єгипет',
       },
       84183: {
         id: 84183,
-        name: "Protels Beach Club & SPA",
-        img: "https://newimg.otpusk.com/2/400x300/00/03/95/62/3956278.webp",
+        name: 'Protels Beach Club & SPA',
+        img: 'https://newimg.otpusk.com/2/400x300/00/03/95/62/3956278.webp',
         cityId: 1247,
-        cityName: "Марса Алам",
-        countryId: "43",
-        countryName: "Єгипет",
+        cityName: 'Марса Алам',
+        countryId: '43',
+        countryName: 'Єгипет',
       },
       7898: {
         id: 7898,
-        name: "Saphir Hotel & Villas",
-        img: "https://newimg.otpusk.com/2/400x300/00/04/37/33/4373386.webp",
+        name: 'Saphir Hotel & Villas',
+        img: 'https://newimg.otpusk.com/2/400x300/00/04/37/33/4373386.webp',
         cityId: 953,
-        cityName: "Аланія",
-        countryId: "115",
-        countryName: "Туреччина",
+        cityName: 'Аланія',
+        countryId: '115',
+        countryName: 'Туреччина',
       },
     };
 
@@ -106,18 +106,18 @@ class DB {
   getHotel = (hotelID) => {
     const [, hotel] =
       Object.entries(this.getHotels()).find(
-        ([, hotel]) => hotel.id === hotelID
+        ([, hotel]) => hotel.id === hotelID,
       ) ?? [];
 
     if (hotel) {
       const description =
-        "Готель розташований на березі моря. Готель заснований у 1990 році, остання реновація проведена у 2016 році. Затишна зелена територія, комфортабельні номери. Поруч із готелем знаходиться гарна дискотека. Підійде для молоді та сімей з дітьми.";
+        'Готель розташований на березі моря. Готель заснований у 1990 році, остання реновація проведена у 2016 році. Затишна зелена територія, комфортабельні номери. Поруч із готелем знаходиться гарна дискотека. Підійде для молоді та сімей з дітьми.';
       const services = {
-        wifi: "yes",
-        aquapark: "none",
-        tennis_court: "yes",
-        laundry: "yes",
-        parking: "yes",
+        wifi: 'yes',
+        aquapark: 'none',
+        tennis_court: 'yes',
+        laundry: 'yes',
+        parking: 'yes',
       };
 
       return { ...hotel, description, services };
@@ -133,8 +133,8 @@ class DB {
   getHotelsByCountryID = (countryID) => {
     return Object.fromEntries(
       Object.entries(this.getHotels()).filter(
-        ([, hotel]) => hotel.countryId === countryID
-      )
+        ([, hotel]) => hotel.countryId === countryID,
+      ),
     );
   };
 
@@ -159,7 +159,7 @@ class Price {
   static futureDate(daysFromNow) {
     const d = new Date();
     d.setDate(d.getDate() + daysFromNow);
-    return d.toISOString().split("T")[0];
+    return d.toISOString().split('T')[0];
   }
 
   static generate() {
@@ -171,7 +171,7 @@ class Price {
     return {
       id: generateToken(),
       amount,
-      currency: "usd",
+      currency: 'usd',
       startDate,
       endDate,
     };
@@ -206,7 +206,7 @@ class Search {
         const price = Price.generate();
 
         return [price.id, Object.assign(price, { hotelID })];
-      })
+      }),
     );
   }
 }
@@ -219,7 +219,7 @@ export const getCountries = () => {
   const response = new Response(JSON.stringify(countries), {
     status: 200,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   });
 
@@ -229,9 +229,9 @@ export const getCountries = () => {
 export const searchGeo = (string) => {
   const addType = (type) => (entity) => ({ ...entity, type });
 
-  const countries = Object.values(db.getCountries()).map(addType("country"));
-  const hotels = Object.values(db.getHotels()).map(addType("hotel"));
-  const cities = Object.values(db.getCities()).map(addType("city"));
+  const countries = Object.values(db.getCountries()).map(addType('country'));
+  const hotels = Object.values(db.getHotels()).map(addType('hotel'));
+  const cities = Object.values(db.getCities()).map(addType('city'));
 
   let geo = {};
 
@@ -278,7 +278,7 @@ export const searchGeo = (string) => {
   const response = new Response(JSON.stringify(geo), {
     status: 200,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   });
 
@@ -290,12 +290,12 @@ export const startSearchPrices = (countryID) => {
     const error = {
       code: 400,
       error: true,
-      message: "Country id is required param.",
+      message: 'Country id is required param.',
     };
     const response = new Response(JSON.stringify(error), {
       status: 400,
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
 
@@ -314,7 +314,7 @@ export const startSearchPrices = (countryID) => {
   const response = new Response(JSON.stringify(body), {
     status: 200,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   });
 
@@ -328,12 +328,12 @@ export const getSearchPrices = (token) => {
     const error = {
       code: 404,
       error: true,
-      message: "Search with this token was not found.",
+      message: 'Search with this token was not found.',
     };
     const response = new Response(JSON.stringify(error), {
       status: 404,
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
 
@@ -344,13 +344,13 @@ export const getSearchPrices = (token) => {
     const error = {
       code: 425,
       error: true,
-      message: "Search results are not ready yet. Please try again later.",
+      message: 'Search results are not ready yet. Please try again later.',
       waitUntil: new Date(search.readyTimestamp).toISOString(),
     };
     const response = new Response(JSON.stringify(error), {
       status: 425,
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
 
@@ -361,7 +361,7 @@ export const getSearchPrices = (token) => {
   const response = new Response(JSON.stringify({ prices }), {
     status: 200,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   });
 
@@ -373,12 +373,12 @@ export const stopSearchPrices = (token) => {
     const error = {
       code: 404,
       error: true,
-      message: "Search with this token was not found.",
+      message: 'Search with this token was not found.',
     };
     const response = new Response(JSON.stringify(error), {
       status: 404,
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
 
@@ -388,12 +388,12 @@ export const stopSearchPrices = (token) => {
   db.deleteSearch(token);
 
   const body = {
-    message: "Search has been cancelled successfully.",
+    message: 'Search has been cancelled successfully.',
   };
   const response = new Response(JSON.stringify(body), {
     status: 200,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   });
 
@@ -406,7 +406,7 @@ export const getHotels = (countryID) => {
   const response = new Response(JSON.stringify(hotels), {
     status: 200,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   });
 
@@ -420,11 +420,11 @@ export const getHotel = (hotelId) => {
     const error = {
       code: 404,
       error: true,
-      message: "Hotel with this ID was not found.",
+      message: 'Hotel with this ID was not found.',
     };
     const resp = new Response(JSON.stringify(error), {
       status: 404,
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' },
     });
     return Promise.reject(resp);
   }
@@ -432,7 +432,7 @@ export const getHotel = (hotelId) => {
   const response = new Response(JSON.stringify(hotel), {
     status: 200,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   });
 
@@ -444,12 +444,12 @@ export const getPrice = (priceId) => {
     const error = {
       code: 404,
       error: true,
-      message: "Offer with this ID was not found.",
+      message: 'Offer with this ID was not found.',
     };
     const response = new Response(JSON.stringify(error), {
       status: 404,
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
 
@@ -460,7 +460,7 @@ export const getPrice = (priceId) => {
   const response = new Response(JSON.stringify(price), {
     status: 200,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   });
 

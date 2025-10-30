@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import './App.scss'
+import './App.scss';
 import { TourSearchForm } from './components/TourSearchForm';
 import { ToursResults } from './components/ToursResults';
 // @ts-ignore
 import { getHotels } from './api/api.js';
-import type { GeoEntity } from './types/GeoGentity.js';
+import type { GeoEntity } from './types/GeoGentity.ts';
 import { Route, Routes } from 'react-router-dom';
-import { TourPage } from './modules/TourPage/TourPage.js';
+import { TourPage } from './modules/TourPage/TourPage.tsx';
 
 interface Hotel {
   id: number;
@@ -16,7 +16,7 @@ interface Hotel {
   cityName: string;
   countryId: string;
   countryName: string;
-};
+}
 
 function App() {
   const [countries, setCountries] = useState<Record<string, GeoEntity>>({});
@@ -36,11 +36,11 @@ function App() {
       .then((res: Response) => res.json())
       .then((data: Record<string, Hotel>) => {
         const hotels = Object.values(data);
-        setHotelsCache(prev => ({ ...prev, [countryId]: hotels }));
+        setHotelsCache((prev) => ({ ...prev, [countryId]: hotels }));
         callback(hotels);
       })
       .catch((err: unknown) => {
-        console.error("Помилка при завантаженні готелів:", err);
+        console.error('Помилка при завантаженні готелів:', err);
         callback([]);
       });
   };
@@ -51,15 +51,14 @@ function App() {
       return;
     }
 
-    loadHotels(countryId, hotels => {
-      const merged = newTours.map(tour => {
+    loadHotels(countryId, (hotels) => {
+      const merged = newTours.map((tour) => {
         return {
           ...tour,
-          hotel: hotels.find(h => h.id === Number(tour.hotelID))
+          hotel: hotels.find((h) => h.id === Number(tour.hotelID)),
         };
       });
 
-      console.log("Merged tours with hotels:", merged);
       setTours(merged);
     });
   };
@@ -67,29 +66,32 @@ function App() {
   return (
     <div className="app">
       <Routes>
-        <Route path="/" element={
-          <>
-            <TourSearchForm
-              setCountries={setCountries}
-              setTours={setTours}
-              setToursLoading={setToursLoading}
-              setToursError={setToursError}
-              setSearchToken={setSearchToken}
-              onToursLoaded={handleToursLoaded}
-            />
-            <ToursResults
-              countries={countries}
-              tours={tours}
-              loading={toursLoading}
-              error={toursError}
-              token={searchToken}
-            />
-          </>
-        } />
+        <Route
+          path="/"
+          element={
+            <>
+              <TourSearchForm
+                setCountries={setCountries}
+                setTours={setTours}
+                setToursLoading={setToursLoading}
+                setToursError={setToursError}
+                setSearchToken={setSearchToken}
+                onToursLoaded={handleToursLoaded}
+              />
+              <ToursResults
+                countries={countries}
+                tours={tours}
+                loading={toursLoading}
+                error={toursError}
+                token={searchToken}
+              />
+            </>
+          }
+        />
         <Route path="/tour/:id" element={<TourPage />} />
       </Routes>
     </div>
-  )
+  );
 }
 
 export default App;
