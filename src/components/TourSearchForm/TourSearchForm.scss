@@ -43,6 +43,11 @@
     width: 100%;
     border-radius: 5px;
     cursor: pointer;
+
+    &:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
   }
 }
 

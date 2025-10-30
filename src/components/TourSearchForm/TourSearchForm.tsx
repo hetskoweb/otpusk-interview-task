@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 // @ts-ignore
-import { getCountries, searchGeo, startSearchPrices, getSearchPrices } from "../../api/api.js"
+import { getCountries, searchGeo, startSearchPrices, getSearchPrices, stopSearchPrices } from "../../api/api.js"
 import "./TourSearchForm.scss";
 import { Loader } from "../Loader/Loader.js";
 import closeIcon from '../../img/icon-close.svg';
@@ -25,6 +25,10 @@ export const TourSearchForm: React.FC<Props> = ({ setCountries, setTours, setTou
   const [loading, setLoading] = useState(false);
   const [selectedCountryId, setSelectedCountryId] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const activeSearchToken = useRef<string | null>(null);
+  const searchCancelled = useRef(false);
+  const searchTimeout = useRef<number | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
     getCountries()
@@ -117,14 +121,18 @@ export const TourSearchForm: React.FC<Props> = ({ setCountries, setTours, setTou
     const now = Date.now();
     const delay = waitTime > now ? waitTime - now : 0;
 
-    setTimeout(() => {
+    searchTimeout.current = setTimeout(() => {
+      if (searchCancelled.current) return;
+
       getSearchPrices(token)
         .then((res: Response) => res.json())
-        .then((data: any) => {
-          console.log("getSearchPrices response:", data);
+        .then((data: { prices?: Record<string, any>; code?: number; waitUntil?: string; message?: string }) => {
+          if (searchCancelled.current) return;
+
           if (data.prices) {
             onToursLoaded(Object.values(data.prices), selectedCountryId);
             setToursLoading(false);
+            setIsSearching(false);
           } else if (data.code === 425 && data.waitUntil) {
             fetchTours(token, new Date(data.waitUntil).getTime(), retries);
           } else {
@@ -132,12 +140,15 @@ export const TourSearchForm: React.FC<Props> = ({ setCountries, setTours, setTou
           }
         })
         .catch((err: unknown) => {
+          if (searchCancelled.current) return;
+
           if (retries > 0) {
             fetchTours(token, Date.now(), retries - 1);
           } else {
             console.error("Помилка отримання турів:", err);
             setToursError(true);
             setToursLoading(false);
+            setIsSearching(false);
           }
         });
     }, delay);
@@ -146,18 +157,38 @@ export const TourSearchForm: React.FC<Props> = ({ setCountries, setTours, setTou
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!searchText || selectedType !== "country") {
-      return;
-    }
+    if (!searchText || selectedType !== "country") return;
 
     setToursLoading(true);
     setTours([]);
     setToursError(false);
+    setIsSearching(true);
+
+    if (activeSearchToken.current) {
+      searchCancelled.current = true;
+
+      if (searchTimeout.current) {
+        clearTimeout(searchTimeout.current);
+      }
+
+      stopSearchPrices(activeSearchToken.current)
+        .then((res: Response) => res.json())
+        .then((data: { success: boolean; message?: string }) => {
+
+        })
+        .catch((err: unknown) => {
+          console.error("Помилка при зупинці пошуку:", err);
+        });
+    }
+
+    searchCancelled.current = false;
 
     startSearchPrices(selectedCountryId)
       .then((res: Response) => res.json())
       .then((data: { token: string; waitUntil: string }) => {
+        activeSearchToken.current = data.token;
         setSearchToken(data.token);
+
         const waitTime = new Date(data.waitUntil).getTime();
         fetchTours(data.token, waitTime);
       })
@@ -165,6 +196,7 @@ export const TourSearchForm: React.FC<Props> = ({ setCountries, setTours, setTou
         console.error("Помилка старту пошуку:", err);
         setToursError(true);
         setToursLoading(false);
+        setIsSearching(false);
       });
   };
 
@@ -218,7 +250,7 @@ export const TourSearchForm: React.FC<Props> = ({ setCountries, setTours, setTou
           </ul>
         )}
       </div>
-      <button type="submit" className="form__btn">
+      <button type="submit" className="form__btn" disabled={isSearching}>
         Знайти
       </button>
     </form>
