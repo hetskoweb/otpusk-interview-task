@@ -1,73 +1,86 @@
-# React + TypeScript + Vite
+# Tour Search App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
+This project is a React-based tour search client. Users can:
 
-Currently, two official plugins are available:
+- Select a travel destination (country or city)
+- Enter departure city
+- Search for tours and view results sorted by price
+- View detailed information on a tour
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The app uses a provided `api.js` for all data operations. Modifications to `api.js` are not allowed.'
 
-## React Compiler
+## API Methods
+- `getCountries()` — fetch all countries
+- `searchGeo(query)` — search countries/cities
+- `startSearchPrices(countryID)` — initiate server search
+- `getSearchPrices(token)` — get search results
+- `stopSearchPrices(token)` — cancel active search
+- `getPrice(priceId)` — tour details
+- `getHotel(hotelId)` — hotel details
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Live demo
 
-## Expanding the ESLint configuration
+Experience the live website: [Tour Search App](https://hetskoweb.github.io/otpusk-interview-task/)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Technologies Used 💻
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+**Core**
+* **React (v18.3.1)** - UI framework
+* **TypeScript (v5.2.2)** - Type safety
+* **Sass (v1.83.4)** - Styling
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+**UI/UX**
+* **React Router (v6.25.1)** - Navigation
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+**Development && Deployment**
+* **Vite (v5.3.1)** - Build tool
+* **ESLint (v8.57.0)** - Code Quality
+* **Prettier (v3.3.2)** - Code Formatting
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Features by Task
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Task 1: Search Form
+- Input with dropdown for countries and cities.
+- Fetch countries via `getCountries()`.
+- Search as user types using `searchGeo()`.
+- Selecting an item closes dropdown and fills input.
+
+### Task 2: Search Tours
+- Submit form → `startSearchPrices(countryID)` → get search token.
+- Poll results with `getSearchPrices(token)` after allowed wait.
+- Handles:
+  - Loading state
+  - Retry on error (up to 2 times)
+  - Empty results message
+  - Errors
+
+### Task 3: Render Results
+- Display tours as cards in a responsive grid (2 per row, 1 if width < 250px).
+- Each card shows:
+  - Hotel name
+  - Country & city
+  - Tour start date
+  - Price (formatted)
+  - Hotel image
+  - Link to view price
+
+### Task 4: Tour Page
+- Separate page for a selected tour.
+- Fetch data via:
+  - `getPrice(priceId)` for tour details
+  - `getHotel(hotelId)` for hotel details
+- Display:
+  - Hotel info (name, country, city, image, description, amenities)
+  - Tour info (dates, price)
+- Reuse components from search results.
+
+### Task 5: Cancel & Restart Search
+- If a search is active and parameters change:
+  - Cancel current search (`stopSearchPrices(token)`)
+  - Ignore any late responses from old token
+  - Start new search with updated parameters
+- "Find" button is temporarily disabled during cancellation/restart.
+- Poll new search results as in Task 2.
