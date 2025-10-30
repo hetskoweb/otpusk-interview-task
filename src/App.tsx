@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import './App.scss'
 import { TourSearchForm } from './components/TourSearchForm';
 import { ToursResults } from './components/ToursResults';
 // @ts-ignore
 import { getHotels } from './api/api.js';
 import type { GeoEntity } from './types/GeoGentity.js';
+import { Route, Routes } from 'react-router-dom';
+import { TourPage } from './modules/TourPage/TourPage.js';
 
 interface Hotel {
   id: number;
@@ -64,8 +66,28 @@ function App() {
 
   return (
     <div className="app">
-      <TourSearchForm setCountries={setCountries} setTours={setTours} setToursLoading={setToursLoading} setToursError={setToursError} setSearchToken={setSearchToken} onToursLoaded={handleToursLoaded} />
-      <ToursResults countries={countries} tours={tours} loading={toursLoading} error={toursError} token={searchToken} />
+      <Routes>
+        <Route path="/" element={
+          <>
+            <TourSearchForm
+              setCountries={setCountries}
+              setTours={setTours}
+              setToursLoading={setToursLoading}
+              setToursError={setToursError}
+              setSearchToken={setSearchToken}
+              onToursLoaded={handleToursLoaded}
+            />
+            <ToursResults
+              countries={countries}
+              tours={tours}
+              loading={toursLoading}
+              error={toursError}
+              token={searchToken}
+            />
+          </>
+        } />
+        <Route path="/tour/:id" element={<TourPage />} />
+      </Routes>
     </div>
   )
 }
