@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import type { GeoEntity } from "../../types/GeoGentity";
 import type { Tour } from "../../types/Tour";
 
@@ -34,7 +35,13 @@ export const TourCard: React.FC<Props> = ({ countries, tour }) => {
           })}
         </div>
         <div className="tour__price">{new Intl.NumberFormat("uk-UA").format(tour.amount)} <span>{tour.currency}</span></div>
-        <a href="#" className="tour__btn">Відкрити ціну</a>
+        <Link
+          to={`/tour/${tour.id}`}
+          state={{ hotelId: tour.hotel?.id }}
+          className="tour__btn"
+        >
+          Відкрити ціну
+        </Link>
       </div>
     </div>
   );
